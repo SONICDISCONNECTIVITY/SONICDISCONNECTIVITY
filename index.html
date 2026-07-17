@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonic Laboratory — Tunis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+
+        /* ── TOKENS ─────────────────────────────── */
+        :root {
+            --bg:          #0c0b09;
+            --bg-card:     #111009;
+            --bg-card-2:   #181610;
+            --text:        #ddd5c0;
+            --text-dim:    #8a8070;
+            --text-muted:  #504a3e;
+            --accent:      #c4922a;
+            --accent-dim:  #7a5c18;
+            --border:      #201e18;
+            --border-2:    #2c2a22;
+        }
+
+        /* ── RESET ──────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            line-height: 1.7;
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+        img { display: block; width: 100%; }
+        a { color: var(--accent); text-decoration: none; }
+
+        /* ── NAV ────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.25rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.4s ease, border-bottom 0.4s ease;
+        }
+        nav.scrolled {
+            background: rgba(12, 11, 9, 0.94);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* ── HERO ───────────────────────────────── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--accent);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+        }
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(3.8rem, 9vw, 8.5rem);
+            line-height: 1.0;
+            color: var(--text);
+            margin-bottom: 2.25rem;
+            max-width: 950px;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        .hero-subtitle {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-style: italic;
+            font-size: clamp(1.1rem, 2.5vw, 1.55rem);
+            color: var(--text-dim);
+            max-width: 560px;
+            line-height: 1.55;
+            margin-bottom: 4rem;
+        }
+        .hero-meta {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            line-height: 2.2;
+        }
+
+        /* Waveform */
+        .waveform {
+            position: absolute;
+            right: 6%;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 220px;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+        .waveform-bar {
+            width: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+            animation: wave 1.6s ease-in-out infinite;
+        }
+        .waveform-bar:nth-child(1)  { height: 15%; animation-delay: 0.0s; }
+        .waveform-bar:nth-child(2)  { height: 45%; animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3)  { height: 75%; animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4)  { height: 40%; animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5)  { height: 90%; animation-delay: 0.4s; }
+        .waveform-bar:nth-child(6)  { height: 55%; animation-delay: 0.5s; }
+        .waveform-bar:nth-child(7)  { height: 30%; animation-delay: 0.6s; }
+        .waveform-bar:nth-child(8)  { height: 80%; animation-delay: 0.7s; }
+        .waveform-bar:nth-child(9)  { height: 50%; animation-delay: 0.8s; }
+        .waveform-bar:nth-child(10) { height: 95%; animation-delay: 0.9s; }
+        .waveform-bar:nth-child(11) { height: 35%; animation-delay: 1.0s; }
+        .waveform-bar:nth-child(12) { height: 65%; animation-delay: 1.1s; }
+        .waveform-bar:nth-child(13) { height: 20%; animation-delay: 1.2s; }
+        .waveform-bar:nth-child(14) { height: 72%; animation-delay: 1.3s; }
+        .waveform-bar:nth-child(15) { height: 28%; animation-delay: 0.15s; }
+        .waveform-bar:nth-child(16) { height: 88%; animation-delay: 0.25s; }
+        .waveform-bar:nth-child(17) { height: 48%; animation-delay: 0.35s; }
+        .waveform-bar:nth-child(18) { height: 62%; animation-delay: 0.45s; }
+        .waveform-bar:nth-child(19) { height: 38%; animation-delay: 0.55s; }
+        .waveform-bar:nth-child(20) { height: 18%; animation-delay: 0.65s; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.35); }
+            50%       { transform: scaleY(1); }
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 36px;
+            height: 1px;
+            background: var(--text-muted);
+        }
+
+        /* ── SHARED SECTION STYLES ──────────────── */
+        .site-section {
+            padding: 7rem 3rem;
+            border-top: 1px solid var(--border);
+        }
+        .eyebrow {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--accent);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        .section-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            line-height: 1.15;
+            margin-bottom: 2.5rem;
+            max-width: 680px;
+        }
+        .rule {
+            width: 52px;
+            height: 1px;
+            background: var(--accent-dim);
+            margin-bottom: 3rem;
+        }
+
+        /* ── PROJECT SECTION ────────────────────── */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 5rem;
+            align-items: start;
+        }
+        .project-body p {
+            font-size: 0.93rem;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            line-height: 1.85;
+        }
+        .project-body p:last-child { margin-bottom: 0; }
+        .project-meta { padding-top: 0.5rem; }
+        .meta-row {
+            border-top: 1px solid var(--border);
+            padding: 1.1rem 0;
+        }
+        .meta-row:last-child { border-bottom: 1px solid var(--border); }
+        .meta-key {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+        .meta-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        /* ── ZONES SECTION ──────────────────────── */
+        .zones-lead {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            max-width: 560px;
+            margin-bottom: 4rem;
+        }
+        .zones-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+        .zone-card {
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+        }
+        .zone-card.inactive { opacity: 0.4; }
+
+        /* Zone photo */
+        .zone-photo {
+            width: 100%;
+            height: 270px;
+            overflow: hidden;
+            background: var(--bg-card-2);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .zone-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        .zone-card:not(.inactive):hover .zone-photo img {
+            transform: scale(1.04);
+        }
+        .zone-photo-ph {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        /* Zone content */
+        .zone-body { padding: 2rem; flex: 1; display: flex; flex-direction: column; }
+        .zone-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.7rem;
+        }
+        .zone-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.85rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+            line-height: 1.15;
+        }
+        .zone-concept {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+        }
+        .zone-desc {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+            margin-bottom: 1.75rem;
+            flex: 1;
+        }
+
+        /* ── AUDIO PLAYER ───────────────────────── */
+        .audio-player { border-top: 1px solid var(--border); padding-top: 1.25rem; }
+        .audio-player audio { display: none; }
+        .player-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-dim);
+            background: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .play-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+        .play-btn svg { width: 13px; height: 13px; }
+        .play-icon  { display: block; }
+        .pause-icon { display: none; }
+        .play-btn.playing .play-icon  { display: none; }
+        .play-btn.playing .pause-icon { display: block; }
+        .player-track { flex: 1; }
+        .progress-bar {
+            width: 100%;
+            height: 2px;
+            background: var(--border-2);
+            border-radius: 1px;
+            cursor: pointer;
+            margin-bottom: 0.45rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 1px;
+            width: 0%;
+            pointer-events: none;
+        }
+        .player-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--text-muted);
+        }
+        .forthcoming-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border: 1px solid var(--border-2);
+            padding: 0.5rem 0.8rem;
+            display: inline-block;
+        }
+
+        /* ── FRAMEWORK SECTION ──────────────────── */
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+        .concept-card { background: var(--bg-card); padding: 2.5rem; }
+        .concept-thinker {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .concept-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.65rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .concept-text {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        /* ── ABOUT SECTION ──────────────────────── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 5rem;
+            align-items: start;
+        }
+        .about-text p {
+            font-size: 0.93rem;
+            color: var(--text-dim);
+            line-height: 1.85;
+            margin-bottom: 1.25rem;
+        }
+        .about-text p:last-child { margin-bottom: 0; }
+        .context-block {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+        }
+        .context-block p {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            line-height: 2.2;
+            margin-bottom: 0 !important;
+        }
+
+        /* ── FOOTER ─────────────────────────────── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-copy {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.52rem;
+            color: var(--text-muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            line-height: 2.1;
+        }
+
+        /* ── RESPONSIVE ─────────────────────────── */
+        @media (max-width: 960px) {
+            nav { padding: 1rem 1.5rem; }
+            .nav-links { gap: 1.5rem; }
+            .site-section { padding: 5rem 1.5rem; }
+            #hero { padding: 0 1.5rem; }
+            .project-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .zones-grid { grid-template-columns: 1fr; }
+            .concepts-grid { grid-template-columns: 1fr; }
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .waveform { display: none; }
+            .scroll-hint { left: 1.5rem; }
+            footer { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+        @media (max-width: 480px) {
+            .nav-links { display: none; }
+            .site-section { padding: 4rem 1.25rem; }
+            #hero { padding: 0 1.25rem; }
+            .hero-title { font-size: 3rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .waveform-bar { animation: none !important; height: 50% !important; }
+            .zone-photo img { transition: none !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- ── NAV ────────────────────────────────────── -->
+<nav id="navbar">
+    <div class="nav-logo">Sonic Laboratory · Tunis</div>
+    <ul class="nav-links">
+        <li><a href="#project">Project</a></li>
+        <li><a href="#zones">Zones</a></li>
+        <li><a href="#framework">Framework</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+</nav>
+
+<!-- ── HERO ───────────────────────────────────── -->
+<section id="hero">
+    <div class="hero-eyebrow">Field Research · Tunis, 2026</div>
+    <h1 class="hero-title">
+        In Tunis,<br>
+        silence is<br>
+        <em>infrastructure.</em>
+    </h1>
+    <p class="hero-subtitle">
+        Environmental Dis:connectivity<br>in Tunisian Soundscapes
+    </p>
+    <div class="hero-meta">
+        The Urban City as a Sonic Laboratory<br>
+        gd:c Summer School — Worlds in the Lab &nbsp;·&nbsp; Munich, July 2026
+    </div>
+
+    <!-- Animated waveform — signature element -->
+    <div class="waveform" aria-hidden="true">
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+        <div class="scroll-line"></div>
+        Scroll
+    </div>
+</section>
+
+<!-- ── PROJECT ────────────────────────────────── -->
+<section id="project" class="site-section">
+    <div class="eyebrow">The Project</div>
+    <div class="project-grid">
+        <div>
+            <h2 class="section-heading">What does global dis:connectivity sound like?</h2>
+            <div class="rule"></div>
+            <div class="project-body">
+                <p>This project treats the city of Tunis as a sonic laboratory — an experimental site where the dis:connectivity of global processes becomes acoustically perceptible. Through field recordings from contrasting urban zones, it investigates how the same forces that produce connection and acoustic management in one part of the city simultaneously produce exposure, noise, and improvised substitution in another.</p>
+                <p>The city is not approached as a backdrop. It is the laboratory itself: a space where elements of global integration and disintegration can be isolated, juxtaposed, and activated as investigative tools. Listening is the method. The soundscape is the evidence.</p>
+                <p>The recordings ask: who has access to engineered silence, and who remains acoustically exposed? What global processes are registered in everyday urban sound — and what does their absence tell us about the limits of connection?</p>
+            </div>
+        </div>
+        <div class="project-meta">
+            <div class="meta-row">
+                <div class="meta-key">Researcher</div>
+                <!-- REPLACE: add your name -->
+                <div class="meta-val">[Your Name]</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-key">Affiliation</div>
+                <div class="meta-val">MA Musicology & Anthropology, University of Tunis</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-key">Field Site</div>
+                <div class="meta-val">Tunis, Tunisia — 2026</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-key">Presented at</div>
+                <div class="meta-val">gd:c Summer School — Worlds in the Lab, LMU Munich</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-key">Format</div>
+                <div class="meta-val">Curated Listening Session (Assay)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── ZONES ──────────────────────────────────── -->
+<section id="zones" class="site-section">
+    <div class="eyebrow">Field Recordings</div>
+    <h2 class="section-heading">The Zones</h2>
+    <p class="zones-lead">Six urban sites. Each a node in the acoustic map of dis:connectivity.</p>
+
+    <div class="zones-grid">
+
+        <!-- ZONE I — MEDINA -->
+        <div class="zone-card">
+            <div class="zone-photo">
+                <!--
+                    REPLACE: put your medina photo in an /images/ folder
+                    next to this HTML file, then update the src below.
+                    e.g. <img src="./images/medina.jpg" alt="The Medina, Tunis">
+                -->
+                <img src="./images/medina.jpg" alt="The Medina, Tunis"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="zone-photo-ph" style="display:none">
+                    Add → ./images/medina.jpg
+                </div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone I &nbsp;·&nbsp; Recorded 11 July 2026</div>
+                <h3 class="zone-name">The Medina</h3>
+                <div class="zone-concept">Liminality · Betwixt and Between</div>
+                <p class="zone-desc">The old city as acoustic threshold. Copper-beating in Souk el Nahhassin, vendors calling out to passersby, the transition at Bab el Bhar where the modern city recedes and another acoustic world begins. Between the historical and the contemporary, between the formal economy and the craft tradition, the medina is permanently betwixt and between.</p>
+                <div class="audio-player">
+                    <!--
+                        REPLACE: put your audio file in an /audio/ folder
+                        next to this HTML file, then update the src below.
+                        Supported formats: .m4a .mp3 .wav
+                        e.g. <audio src="./audio/medina.m4a" preload="none"></audio>
+                    -->
+                    <audio src="./audio/medina.m4a" preload="none"></audio>
+                    <div class="player-row">
+                        <button class="play-btn" aria-label="Play or pause Medina recording">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <polygon class="play-icon" points="5,3 19,12 5,21"/>
+                                <g class="pause-icon">
+                                    <rect x="6" y="4" width="4" height="16"/>
+                                    <rect x="14" y="4" width="4" height="16"/>
+                                </g>
+                            </svg>
+                        </button>
+                        <div class="player-track">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="player-time">0:00 / 0:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE II — HAFSEYA -->
+        <div class="zone-card">
+            <div class="zone-photo">
+                <!-- REPLACE: e.g. <img src="./images/hafseya.jpg" alt="Hafseya"> -->
+                <img src="./images/hafseya.jpg" alt="Hafseya and Marché Sidi Bahri, Tunis"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="zone-photo-ph" style="display:none">
+                    Add → ./images/hafseya.jpg
+                </div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone II &nbsp;·&nbsp; Recorded 11 July 2026</div>
+                <h3 class="zone-name">Hafseya &amp; Marché Sidi Bahri</h3>
+                <div class="zone-concept">Third Space · People as Infrastructure</div>
+                <p class="zone-desc">The acoustic texture of the urban periphery. Motorbikes, louages, vendors, the overlapping density of public street life. Here, people are the infrastructure — their voices, movements, and collective presence substituting for the smooth, managed systems that formal development does not provide. The noise is not disorder. It is agency.</p>
+                <div class="audio-player">
+                    <!-- REPLACE: e.g. <audio src="./audio/hafseya.m4a" preload="none"></audio> -->
+                    <audio src="./audio/hafseya.m4a" preload="none"></audio>
+                    <div class="player-row">
+                        <button class="play-btn" aria-label="Play or pause Hafseya recording">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <polygon class="play-icon" points="5,3 19,12 5,21"/>
+                                <g class="pause-icon">
+                                    <rect x="6" y="4" width="4" height="16"/>
+                                    <rect x="14" y="4" width="4" height="16"/>
+                                </g>
+                            </svg>
+                        </button>
+                        <div class="player-track">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="player-time">0:00 / 0:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE III — SIDI BOU SAID -->
+        <div class="zone-card">
+            <div class="zone-photo">
+                <!-- REPLACE: e.g. <img src="./images/sidi-bou-said.jpg" alt="Sidi Bou Said"> -->
+                <img src="./images/sidi-bou-said.jpg" alt="Sidi Bou Said, Tunis"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="zone-photo-ph" style="display:none">
+                    Add → ./images/sidi-bou-said.jpg
+                </div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone III &nbsp;·&nbsp; Recorded July 2026</div>
+                <h3 class="zone-name">Sidi Bou Said</h3>
+                <div class="zone-concept">Engineered Silence · Acoustic Privilege</div>
+                <p class="zone-desc">The quieted northern suburb. No motorbikes. Birdsong, café terraces, the sea from a distance. This silence is not natural — it is produced through urban planning, property values, and the physical exclusion of informal commerce. Recorded at the same time of day as Hafseya, it is the acoustic form of the same global forces that generate the noise elsewhere.</p>
+                <div class="audio-player">
+                    <!-- REPLACE: e.g. <audio src="./audio/sidi-bou-said.m4a" preload="none"></audio> -->
+                    <audio src="./audio/sidi-bou-said.m4a" preload="none"></audio>
+                    <div class="player-row">
+                        <button class="play-btn" aria-label="Play or pause Sidi Bou Said recording">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <polygon class="play-icon" points="5,3 19,12 5,21"/>
+                                <g class="pause-icon">
+                                    <rect x="6" y="4" width="4" height="16"/>
+                                    <rect x="14" y="4" width="4" height="16"/>
+                                </g>
+                            </svg>
+                        </button>
+                        <div class="player-track">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="player-time">0:00 / 0:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE IV — PORT LA GOULETTE -->
+        <div class="zone-card inactive">
+            <div class="zone-photo">
+                <div class="zone-photo-ph">Recording in progress</div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone IV &nbsp;·&nbsp; Forthcoming</div>
+                <h3 class="zone-name">Port La Goulette</h3>
+                <div class="zone-concept">Global Connection · Trade Infrastructure</div>
+                <p class="zone-desc">The port where global shipping routes physically touch Tunis. Container ships, trucks, mechanical loading rhythms synchronized with international logistics. The sound of global trade as it enters the city — and the residential neighborhoods that absorb its acoustic overspill.</p>
+                <div class="audio-player">
+                    <span class="forthcoming-tag">Recording forthcoming</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE V — LAC -->
+        <div class="zone-card inactive">
+            <div class="zone-photo">
+                <div class="zone-photo-ph">Recording in progress</div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone V &nbsp;·&nbsp; Forthcoming</div>
+                <h3 class="zone-name">Lac — Construction</h3>
+                <div class="zone-concept">Speculative Development · Capital in Sound</div>
+                <p class="zone-desc">Drilling, cement mixers, heavy machinery. Global investment capital reorganizing Tunisian urban space. The construction sound is the acoustic form of a transformation that serves some and displaces others — the warping of the city made audible in machinery and dust.</p>
+                <div class="audio-player">
+                    <span class="forthcoming-tag">Recording forthcoming</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ZONE VI — TGM -->
+        <div class="zone-card inactive">
+            <div class="zone-photo">
+                <div class="zone-photo-ph">Recording in progress</div>
+            </div>
+            <div class="zone-body">
+                <div class="zone-num">Zone VI &nbsp;·&nbsp; Forthcoming</div>
+                <h3 class="zone-name">TGM Train</h3>
+                <div class="zone-concept">Acoustic Journey · The Warp in Motion</div>
+                <p class="zone-desc">A recording of the full journey from central Tunis to the northern suburbs. The acoustic texture shifts as the train moves through the dis:connected city — a real-time journey through the warp, from one acoustic world to another, held in a single unbroken recording.</p>
+                <div class="audio-player">
+                    <span class="forthcoming-tag">Recording forthcoming</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ── FRAMEWORK ──────────────────────────────── -->
+<section id="framework" class="site-section">
+    <div class="eyebrow">Theoretical Framework</div>
+    <h2 class="section-heading">The Concepts</h2>
+    <div class="rule"></div>
+
+    <div class="concepts-grid">
+        <div class="concept-card">
+            <div class="concept-thinker">Roland Wenzlhuemer</div>
+            <h3 class="concept-name">Dis:connectivity</h3>
+            <p class="concept-text">The world does not shrink uniformly through globalisation — it warps. The same infrastructure that connects one zone simultaneously disconnects another. Dis:connectivity names this turbulent, mutually constitutive relationship: the silence of Sidi Bou Said and the acoustic density of Hafseya are not two separate phenomena. They are produced together, by the same forces, at the same moment.</p>
+        </div>
+        <div class="concept-card">
+            <div class="concept-thinker">Homi K. Bhabha</div>
+            <h3 class="concept-name">The Third Space</h3>
+            <p class="concept-text">In postcolonial urban contexts, most places exist neither fully inside global circuits nor fully outside them. Bhabha's Third Space names this permanent structural condition — hybrid, unstable, generative. The working-class neighborhoods of Tunis are not transitioning toward full integration. They permanently inhabit the in-between: produced by global forces but not fully served by them.</p>
+        </div>
+        <div class="concept-card">
+            <div class="concept-thinker">AbdouMaliq Simone</div>
+            <h3 class="concept-name">People as Infrastructure</h3>
+            <p class="concept-text">Where formal infrastructure is inadequate, people build their own. Vendors, craftsmen, louage drivers, and market workers create collective improvised systems that substitute for what formal development does not provide. In Tunis, the acoustic density of working-class streets is not disorder — it is people functioning as infrastructure. The noise is the sound of collective agency in the Third Space.</p>
+        </div>
+        <div class="concept-card">
+            <div class="concept-thinker">Steven Feld</div>
+            <h3 class="concept-name">Acoustemology</h3>
+            <p class="concept-text">Acoustemology — acoustic epistemology — is the claim that listening is a form of knowing, not merely a form of hearing. Sound does not illustrate knowledge produced elsewhere; it produces its own knowledge. When we listen to Tunisian soundscapes as an experimental method, we are not decorating an argument already made in text. We are conducting an inquiry that text alone cannot perform.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ── ABOUT ───────────────────────────────────── -->
+<section id="about" class="site-section">
+    <div class="eyebrow">The Researcher</div>
+    <div class="about-grid">
+        <div>
+            <h2 class="section-heading">About</h2>
+            <div class="rule"></div>
+        </div>
+        <div class="about-text">
+            <!--
+                REPLACE: update your name below (two places)
+            -->
+            <p><strong style="color:var(--text);font-weight:400">[Your Name]</strong> (TUN — he/him) is an MA student in Musicology at the University of Tunis and in Anthropology at the University of Tunis El Manar. His project approaches the city of Tunis as a sonic laboratory, investigating how everyday soundscapes reflect infrastructural connections, environmental transformations, and socio-economic stratifications. Through field recordings from contrasting urban zones, he examines how listening and sound serve as experimental methods for studying dis:connectivity.</p>
+            <div class="context-block">
+                <p>
+                    PRESENTED AS AN ASSAY AT<br>
+                    GD:C SUMMER SCHOOL 2026<br>
+                    WORLDS IN THE LAB: EXPERIMENTAL SITES OF DIS:CONNECTIVITY<br>
+                    KÄTE HAMBURGER RESEARCH CENTRE GLOBAL DIS:CONNECT<br>
+                    LUDWIG-MAXIMILIANS-UNIVERSITÄT MÜNCHEN<br>
+                    20–24 JULY 2026
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────── -->
+<footer>
+    <div class="footer-copy">
+        The Urban City as a Sonic Laboratory<br>
+        Environmental Dis:connectivity in Tunisian Soundscapes
+    </div>
+    <!-- REPLACE: add your name -->
+    <div class="footer-copy" style="text-align:right">
+        [Your Name] &nbsp;·&nbsp; Tunis, 2026<br>
+        gd:c Summer School &nbsp;·&nbsp; Munich
+    </div>
+</footer>
+
+<script>
+    // ── NAV ─────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── AUDIO PLAYERS ────────────────────────────
+    function fmt(s) {
+        if (!s || isNaN(s) || !isFinite(s)) return '0:00';
+        const m = Math.floor(s / 60);
+        const sec = String(Math.floor(s % 60)).padStart(2, '0');
+        return `${m}:${sec}`;
+    }
+
+    document.querySelectorAll('.audio-player').forEach(wrapper => {
+        const audio = wrapper.querySelector('audio');
+        const btn   = wrapper.querySelector('.play-btn');
+        const bar   = wrapper.querySelector('.progress-bar');
+        const fill  = wrapper.querySelector('.progress-fill');
+        const time  = wrapper.querySelector('.player-time');
+        if (!audio || !btn) return;
+
+        btn.addEventListener('click', () => {
+            if (audio.paused) {
+                // Stop any other playing audio
+                document.querySelectorAll('.audio-player audio').forEach(a => {
+                    if (a !== audio) {
+                        a.pause();
+                        const b = a.closest('.audio-player').querySelector('.play-btn');
+                        if (b) b.classList.remove('playing');
+                    }
+                });
+                audio.play().catch(() => {});
+                btn.classList.add('playing');
+            } else {
+                audio.pause();
+                btn.classList.remove('playing');
+            }
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            fill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+            time.textContent  = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            time.textContent = `0:00 / ${fmt(audio.duration)}`;
+        });
+
+        audio.addEventListener('ended', () => {
+            btn.classList.remove('playing');
+            fill.style.width  = '0%';
+            time.textContent  = `0:00 / ${fmt(audio.duration)}`;
+        });
+
+        bar.addEventListener('click', e => {
+            if (!audio.duration) return;
+            const rect = bar.getBoundingClientRect();
+            audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+        });
+    });
+</script>
+
+</body>
+</html>
