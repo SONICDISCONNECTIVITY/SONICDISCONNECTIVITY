@@ -277,8 +277,13 @@
             object-fit: cover;
             opacity: 0;
             transition: opacity 0.45s ease;
+            pointer-events: none;
         }
-        .gallery-img.active { opacity: 1; }
+        .gallery-img.active {
+            opacity: 1;
+            pointer-events: auto;
+            cursor: zoom-in;
+        }
         .zone-card:not(.inactive):hover .gallery-img.active { opacity: 1; }
         .gallery-btn {
             position: absolute;
@@ -555,7 +560,6 @@
             border-color: var(--accent);
             color: var(--accent);
         }
-        .gallery-img { cursor: zoom-in; }
 
         /* ── RESPONSIVE ─────────────────────────── */
         @media (max-width: 960px) {
@@ -607,12 +611,8 @@
         <em>infrastructure.</em>
     </h1>
     <p class="hero-subtitle">
-        Environmental Dis:connectivity<br>in Tunisian Soundscapes
+        The Urban City as a Sonic Laboratory
     </p>
-    <div class="hero-meta">
-        The Urban City as a Sonic Laboratory<br>
-        gd:c Summer School — Worlds in the Lab &nbsp;·&nbsp; Munich, July 2026
-    </div>
     <div class="waveform" aria-hidden="true">
         <div class="waveform-bar"></div><div class="waveform-bar"></div>
         <div class="waveform-bar"></div><div class="waveform-bar"></div>
@@ -624,10 +624,6 @@
         <div class="waveform-bar"></div><div class="waveform-bar"></div>
         <div class="waveform-bar"></div><div class="waveform-bar"></div>
         <div class="waveform-bar"></div><div class="waveform-bar"></div>
-    </div>
-    <div class="scroll-hint" aria-hidden="true">
-        <span style="display:inline-block;width:36px;height:1px;background:var(--text-muted);flex-shrink:0"></span>
-        Scroll
     </div>
 </section>
 
